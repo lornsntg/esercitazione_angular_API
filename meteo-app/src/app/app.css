@@ -1,0 +1,23 @@
+/* styles.css o home.component.css */
+.weather-info {
+  padding: 15px;
+  border-radius: 10px;
+  background-color: #f8f9fa;
+  margin-bottom: 10px;
+}
+
+.weather-info h5 {
+  color: #6c757d;
+  font-size: 0.9rem;
+  margin-bottom: 5px;
+}
+
+.card {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  border: none;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}

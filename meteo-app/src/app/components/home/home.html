@@ -1,0 +1,67 @@
+<!-- home/home.component.html -->
+<div class="container mt-4">
+  <h1 class="text-center mb-4">Meteo App</h1>
+  
+  <!-- Barra di ricerca -->
+  <div class="row justify-content-center mb-4">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Inserisci il nome della città..." 
+          [(ngModel)]="city"
+          (keyup.enter)="searchWeather()"
+        >
+        <button 
+          class="btn btn-primary" 
+          type="button" 
+          (click)="searchWeather()"
+          [disabled]="loading"
+        >
+          {{ loading ? 'Caricamento...' : 'Cerca' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Messaggio di errore -->
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error }}
+  </div>
+
+  <!-- Dati meteorologici -->
+  <div *ngIf="weatherData && !loading" class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card">
+        <div class="card-header text-center">
+          <h4>Meteo - {{ weatherData.city_name }}</h4>
+        </div>
+        <div class="card-body">
+          <div class="row text-center">
+            <div class="col-6 mb-3">
+              <strong>Temperatura</strong>
+              <div class="h5">{{ weatherData.temp }}°C</div>
+            </div>
+            <div class="col-6 mb-3">
+              <strong>Umidità</strong>
+              <div class="h5">{{ weatherData.rh }}%</div>
+            </div>
+            <div class="col-6 mb-3">
+              <strong>Vento</strong>
+              <div class="h5">{{ weatherData.wind_spd }} m/s</div>
+            </div>
+            <div class="col-6 mb-3">
+              <strong>Pressione</strong>
+              <div class="h5">{{ weatherData.pres }} hPa</div>
+            </div>
+            <div class="col-12">
+              <strong>Descrizione</strong>
+              <div class="h6">{{ weatherData.weather.description }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
