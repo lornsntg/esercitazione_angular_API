@@ -1,11 +1,17 @@
 <!-- home/home.component.html -->
 <div class="container mt-4">
-  <h1 class="text-center mb-4">Meteo App</h1>
+  <h1 class="text-center mb-4">
+    <i class="fas fa-cloud-sun me-2 text-primary"></i>
+    Meteo App
+  </h1>
   
   <!-- Barra di ricerca -->
   <div class="row justify-content-center mb-4">
-    <div class="col-md-6">
-      <div class="input-group">
+    <div class="col-md-8">
+      <div class="input-group input-group-lg">
+        <span class="input-group-text bg-primary text-white">
+          <i class="fas fa-search-location"></i>
+        </span>
         <input 
           type="text" 
           class="form-control" 
@@ -19,7 +25,17 @@
           (click)="searchWeather()"
           [disabled]="loading"
         >
+          <i class="fas fa-search me-2"></i>
           {{ loading ? 'Caricamento...' : 'Cerca' }}
+        </button>
+        <button 
+          class="btn btn-success" 
+          type="button" 
+          (click)="viewForecast()"
+          [disabled]="!city.trim()"
+        >
+          <i class="fas fa-chart-line me-2"></i>
+          16 Giorni
         </button>
       </div>
     </div>
@@ -27,37 +43,118 @@
 
   <!-- Messaggio di errore -->
   <div *ngIf="error" class="alert alert-danger text-center">
+    <i class="fas fa-exclamation-triangle me-2"></i>
     {{ error }}
   </div>
 
-  <!-- Dati meteorologici -->
+  <!-- Dati meteorologici correnti -->
   <div *ngIf="weatherData && !loading" class="row justify-content-center">
-    <div class="col-md-6">
-      <div class="card">
-        <div class="card-header text-center">
-          <h4>Meteo - {{ weatherData.city_name }}</h4>
+    <div class="col-md-10">
+      <div class="card weather-card">
+        <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+          <h4 class="mb-0">
+            <i class="fas fa-map-marker-alt me-2"></i>
+            {{ weatherData.city_name }}, {{ weatherData.country_code }}
+            <small class="ms-2 opacity-75">
+              <i class="fas fa-clock me-1"></i>
+              {{ weatherData.ob_time | date:'HH:mm' }}
+            </small>
+          </h4>
+          <button 
+            class="btn btn-light btn-sm" 
+            (click)="viewForecast()"
+          >
+            <i class="fas fa-calendar-alt me-1"></i>
+            Previsioni 16 Giorni
+          </button>
         </div>
+        
         <div class="card-body">
-          <div class="row text-center">
-            <div class="col-6 mb-3">
-              <strong>Temperatura</strong>
-              <div class="h5">{{ weatherData.temp }}°C</div>
+          <!-- Sezione principale: Icona e temperatura -->
+          <div class="row align-items-center mb-4 main-weather-section">
+            <div class="col-md-6 text-center">
+              <div class="weather-icon-large">
+                <i [class]="getWeatherIcon()"></i>
+              </div>
+              <h5 class="weather-description mt-2">{{ weatherData.weather.description }}</h5>
             </div>
-            <div class="col-6 mb-3">
-              <strong>Umidità</strong>
-              <div class="h5">{{ weatherData.rh }}%</div>
+            <div class="col-md-6 text-center text-md-start">
+              <div [class]="'temperature-display ' + getTemperatureColor()">
+                <span class="temperature-value">{{ weatherData.temp }}</span>
+                <span class="temperature-unit">°C</span>
+              </div>
+              <div class="feels-like">
+                <small class="text-muted">
+                  Percepita: <strong>{{ weatherData.app_temp }}°C</strong>
+                </small>
+              </div>
             </div>
-            <div class="col-6 mb-3">
-              <strong>Vento</strong>
-              <div class="h5">{{ weatherData.wind_spd }} m/s</div>
+          </div>
+
+          <!-- Dettagli meteorologici -->
+          <div class="row weather-details">
+            <div class="col-6 col-md-3 mb-4">
+              <div class="weather-detail-item text-center">
+                <i class="fas fa-tint text-info"></i>
+                <div class="detail-label">Umidità</div>
+                <div class="detail-value">{{ weatherData.rh }}%</div>
+              </div>
             </div>
-            <div class="col-6 mb-3">
-              <strong>Pressione</strong>
-              <div class="h5">{{ weatherData.pres }} hPa</div>
+            
+            <div class="col-6 col-md-3 mb-4">
+              <div class="weather-detail-item text-center">
+                <i [class]="getWindDirectionIcon() + ' text-success'"></i>
+                <div class="detail-label">Vento</div>
+                <div class="detail-value">{{ weatherData.wind_spd }} m/s</div>
+                <small class="wind-direction">{{ weatherData.wind_cdir }}</small>
+              </div>
             </div>
-            <div class="col-12">
-              <strong>Descrizione</strong>
-              <div class="h6">{{ weatherData.weather.description }}</div>
+            
+            <div class="col-6 col-md-3 mb-4">
+              <div class="weather-detail-item text-center">
+                <i class="fas fa-gauge-high text-warning"></i>
+                <div class="detail-label">Pressione</div>
+                <div class="detail-value">{{ weatherData.pres }} hPa</div>
+              </div>
+            </div>
+            
+            <div class="col-6 col-md-3 mb-4">
+              <div class="weather-detail-item text-center">
+                <i class="fas fa-sun text-orange"></i>
+                <div class="detail-label">Indice UV</div>
+                <div class="detail-value" [class]="getUVIndexLevel().class">
+                  {{ weatherData.uv || 'N/A' }}
+                </div>
+                <small [class]="getUVIndexLevel().class">{{ getUVIndexLevel().text }}</small>
+              </div>
+            </div>
+          </div>
+
+          <!-- Informazioni aggiuntive -->
+          <div class="row additional-info">
+            <div class="col-6 col-md-3">
+              <small class="text-muted">
+                <i class="fas fa-eye me-1"></i>
+                Visibilità: {{ weatherData.vis }} km
+              </small>
+            </div>
+            <div class="col-6 col-md-3">
+              <small class="text-muted">
+                <i class="fas fa-cloud me-1"></i>
+                Nuvolosità: {{ weatherData.clouds }}%
+              </small>
+            </div>
+            <div class="col-6 col-md-3">
+              <small class="text-muted">
+                <i class="fas fa-cloud-rain me-1"></i>
+                Precipitazioni: {{ weatherData.precip || 0 }} mm
+              </small>
+            </div>
+            <div class="col-6 col-md-3">
+              <small class="text-muted">
+                <i class="fas fa-snowflake me-1"></i>
+                Neve: {{ weatherData.snow || 0 }} mm
+              </small>
             </div>
           </div>
         </div>

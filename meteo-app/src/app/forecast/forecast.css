@@ -1,0 +1,96 @@
+/* forecast/forecast.component.css */
+.chart-container {
+  overflow-x: auto;
+  padding: 20px 0;
+}
+
+.chart-bars {
+  display: flex;
+  gap: 8px;
+  align-items: end;
+  min-height: 200px;
+  padding: 0 10px;
+}
+
+.chart-bar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 40px;
+}
+
+.chart-date {
+  font-size: 0.75rem;
+  margin-bottom: 8px;
+  text-align: center;
+}
+
+.chart-bar-wrapper {
+  position: relative;
+  height: 120px;
+  display: flex;
+  align-items: end;
+  gap: 2px;
+}
+
+.chart-bar {
+  width: 16px;
+  border-radius: 4px 4px 0 0;
+  transition: all 0.3s ease;
+}
+
+.chart-bar.high-temp {
+  background-color: #ff6b6b;
+  height: 60px; /* Altezza di default */
+}
+
+.chart-bar.low-temp {
+  background-color: #4dabf7;
+  height: 40px; /* Altezza di default */
+}
+
+.chart-temp-label {
+  font-size: 0.7rem;
+  text-align: center;
+  margin-top: 4px;
+}
+
+.legend {
+  margin-top: 20px;
+}
+
+.legend-item {
+  display: inline-flex;
+  align-items: center;
+  font-size: 0.9rem;
+}
+
+.legend-color {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+  margin-right: 8px;
+}
+
+.legend-color.high-temp {
+  background-color: #ff6b6b;
+}
+
+.legend-color.low-temp {
+  background-color: #4dabf7;
+}
+
+.weather-icon {
+  width: 50px;
+  height: 50px;
+}
+
+.card {
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  transition: transform 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+}

@@ -10,11 +10,16 @@ import { Observable } from 'rxjs';
 export class WeatherService {
   private apiKey = environment.weatherbitKey;
   private baseUrl = environment.weatherbitUrl;
+  private forecastUrl = 'https://api.weatherbit.io/v2.0/forecast/daily';
 
   constructor(private http: HttpClient) {}
 
   getWeatherByCity(city: string): Observable<any> {
     const url = `${this.baseUrl}?city=${city}&key=${this.apiKey}`;
+    return this.http.get(url);
+  }
+  get16DayForecast(city: string): Observable<any> {
+    const url = `${this.forecastUrl}?city=${city}&key=${this.apiKey}&days=16&lang=it`;
     return this.http.get(url);
   }
 }

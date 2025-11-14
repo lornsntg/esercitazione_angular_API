@@ -1,0 +1,112 @@
+<!-- forecast/forecast.component.html -->
+<div class="container mt-4">
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <button class="btn btn-outline-primary" (click)="goBack()">
+      ← Torna alla Home
+    </button>
+    <h2 class="text-center mb-0">Previsioni 16 giorni - {{ city }}</h2>
+    <div style="width: 120px;"></div> <!-- Spazio per bilanciare -->
+  </div>
+
+  <!-- Messaggio di errore -->
+  <div *ngIf="error" class="alert alert-danger text-center">
+    {{ error }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Caricamento...</span>
+    </div>
+    <p class="mt-2">Caricamento previsioni...</p>
+  </div>
+
+  <!-- Grafico e Dati Previsioni -->
+  <div *ngIf="forecastData && !loading">
+    <!-- Card con dati attuali -->
+    <div class="card mb-4">
+      <div class="card-header bg-primary text-white">
+        <h5 class="mb-0">Previsioni per i prossimi 16 giorni</h5>
+      </div>
+      <div class="card-body">
+        <!-- Grafico semplificato -->
+        <div class="chart-container mb-4">
+          <div class="chart-bars">
+            <div *ngFor="let day of forecastData.data" class="chart-bar-container">
+              <div class="chart-date">{{ formatDate(day.valid_date) }}</div>
+              <div class="chart-bar-wrapper">
+                <div class="chart-bar high-temp" [style.height.px]="day.high_temp * 2"></div>
+                <div class="chart-bar low-temp" [style.height.px]="day.low_temp * 2"></div>
+              </div>
+              <div class="chart-temp-label">
+                <small>{{ day.high_temp }}°</small><br>
+                <small>{{ day.low_temp }}°</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Legenda -->
+        <div class="legend text-center">
+          <span class="legend-item me-3">
+            <span class="legend-color high-temp"></span>
+            Max Temp (°C)
+          </span>
+          <span class="legend-item">
+            <span class="legend-color low-temp"></span>
+            Min Temp (°C)
+          </span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Dettaglio giornaliero -->
+    <div class="row">
+      <div *ngFor="let day of forecastData.data" class="col-md-6 col-lg-4 col-xl-3 mb-3">
+        <div class="card h-100">
+          <div class="card-header text-center">
+            <strong>{{ formatDate(day.valid_date) }}</strong>
+          </div>
+          <div class="card-body text-center">
+            <div class="mb-2">
+              <img 
+                [src]="'https://www.weatherbit.io/static/img/icons/' + day.weather.icon + '.png'" 
+                [alt]="day.weather.description"
+                class="weather-icon"
+              >
+              <p class="small mb-1">{{ day.weather.description }}</p>
+            </div>
+            
+            <div class="row text-center">
+              <div class="col-6">
+                <strong>Max</strong>
+                <div class="text-danger">{{ day.max_temp }}°C</div>
+              </div>
+              <div class="col-6">
+                <strong>Min</strong>
+                <div class="text-primary">{{ day.min_temp }}°C</div>
+              </div>
+            </div>
+
+            <div class="row mt-2 small">
+              <div class="col-6">
+                <strong>Umidità</strong>
+                <div>{{ day.rh }}%</div>
+              </div>
+              <div class="col-6">
+                <strong>Vento</strong>
+                <div>{{ day.wind_spd }} m/s</div>
+              </div>
+            </div>
+
+            <div class="mt-2 small">
+              <strong>Precipitazioni</strong>
+              <div>{{ day.precip }} mm</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
